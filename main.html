@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Niko's Aviation Wish List | Flight Deck</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0b132b;
+            --panel-bg: #1c2541;
+            --card-bg: #223055;
+            --accent-blue: #3a86ff;
+            --accent-gold: #ffd166;
+            --accent-green: #38a3a5;
+            --text-main: #f8f9fa;
+            --text-muted: #8d99ae;
+            --danger: #ef476f;
+        }
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            background-image: radial-gradient(circle at 50% 10%, #1c2541 0%, #0b132b 90%);
+            min-height: 100vh;
+        }
+        header {
+            text-align: center;
+            padding: 30px 20px;
+            background: var(--panel-bg);
+            border: 2px solid var(--accent-blue);
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 0 20px rgba(58, 134, 255, 0.2);
+        }
+        header h1 {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 2.5rem;
+            margin: 0;
+            color: var(--accent-gold);
+            letter-spacing: 2px;
+        }
+        header p {
+            color: var(--text-muted);
+            margin-top: 10px;
+            font-size: 1.1rem;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .form-card {
+            background: var(--panel-bg);
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 40px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+        }
+        .form-card h2 {
+            margin-top: 0;
+            font-family: 'Share Tech Mono', monospace;
+            color: var(--accent-blue);
+            border-bottom: 1px solid #334155;
+            padding-bottom: 10px;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 768px) {
+            .grid-2 { grid-template-columns: 1fr; }
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            color: var(--text-main);
+            border-radius: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 8px rgba(58, 134, 255, 0.4);
+        }
+        .priority-selector {
+            display: flex;
+            gap: 15px;
+            margin-top: 5px;
+        }
+        .priority-option {
+            flex: 1;
+            background: #0f172a;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .priority-option input { display: none; }
+        .priority-option.selected {
+            border-color: var(--accent-gold);
+            background: rgba(255, 209, 102, 0.1);
+        }
+        button.btn-flight {
+            background: linear-gradient(135deg, #3a86ff, #2563eb);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            font-weight: 800;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: transform 0.1s, box-shadow 0.2s;
+            box-shadow: 0 4px 12px rgba(58, 134, 255, 0.4);
+        }
+        button.btn-flight:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(58, 134, 255, 0.6);
+        }
+        .wishlist-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .item-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #334155;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            transition: transform 0.2s;
+        }
+        .item-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+        }
+        .item-card.top-choice {
+            border: 2px solid var(--accent-gold);
+            box-shadow: 0 0 15px rgba(255, 209, 102, 0.3);
+        }
+        .item-thumb {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            background: #0f172a;
+        }
+        .item-content {
+            padding: 15px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .priority-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            align-self: flex-start;
+        }
+        .badge-top { background: rgba(255, 209, 102, 0.2); color: var(--accent-gold); border: 1px solid var(--accent-gold); }
+        .badge-medium { background: rgba(58, 134, 255, 0.2); color: var(--accent-blue); border: 1px solid var(--accent-blue); }
+        .badge-regular { background: rgba(141, 153, 174, 0.2); color: var(--text-muted); border: 1px solid var(--text-muted); }
+        .item-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0 0 8px 0;
+            color: var(--text-main);
+        }
+        .item-price {
+            font-family: 'Share Tech Mono', monospace;
+            color: var(--accent-green);
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+        .item-notes {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            flex: 1;
+        }
+        .item-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .btn-link {
+            flex: 1;
+            background: #0f172a;
+            color: var(--accent-blue);
+            text-align: center;
+            padding: 8px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border: 1px solid #334155;
+            transition: background 0.2s;
+        }
+        .btn-link:hover {
+            background: var(--accent-blue);
+            color: white;
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>✈️ NIKO'S FLIGHT DECK ✈️</h1>
+            <p>Aviation Wish List & Flight Plan 2026</p>
+        </header>
+
+        <div class="form-card">
+            <h2>🛫 Add New Flight Item</h2>
+            <form id="wishlistForm" onsubmit="submitItem(event)">
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Item Name / Aircraft Part</label>
+                        <input type="text" id="item_title" required placeholder="e.g. Lego F-15 Eagle Jet">
+                    </div>
+                    <div class="form-group">
+                        <label>Store URL</label>
+                        <input type="url" id="item_url" placeholder="https://...">
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Image URL (Thumbnail)</label>
+                        <input type="url" id="image_url" placeholder="https://... (image link)">
+                    </div>
+                    <div class="form-group">
+                        <label>Estimated Price Range</label>
+                        <input type="text" id="price_range" placeholder="e.g. $40 - $50">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Notes (Color, Scale, Specs)</label>
+                    <textarea id="notes" rows="2" placeholder="e.g. 1:48 scale model or specific color"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Priority Rating</label>
+                    <div class="priority-selector">
+                        <label class="priority-option selected" onclick="setPriority('top', this)">
+                            <input type="radio" name="priority" value="top" checked> 🤩 Top Choice
+                        </label>
+                        <label class="priority-option" onclick="setPriority('medium', this)">
+                            <input type="radio" name="priority" value="medium"> 😁 Medium Want
+                        </label>
+                        <label class="priority-option" onclick="setPriority('regular', this)">
+                            <input type="radio" name="priority" value="regular"> 🙂 Regular
+                        </label>
+                    </div>
+                </div>
+                <button type="submit" class="btn-flight" id="submitBtn">Transmit Flight Plan</button>
+            </form>
+        </div>
+
+        <h2 style="font-family: 'Share Tech Mono', monospace; color: var(--accent-gold); border-bottom: 1px solid #334155; padding-bottom: 10px;">📋 Niko's Hangar Wish List</h2>
+        <div id="wishlistContainer" class="loading">Loading flight telemetry...</div>
+    </div>
+
+    <script>
+        const SCRIPT_URL = 'YOUR_APPS_SCRIPT_WEB_APP_URL';
+
+        function setPriority(val, el) {
+            document.querySelectorAll('.priority-option').forEach(opt => opt.classList.remove('selected'));
+            el.classList.add('selected');
+            el.querySelector('input').checked = true;
+        }
+
+        async function fetchWishlist() {
+            try {
+                const response = await fetch(SCRIPT_URL);
+                const result = await response.json();
+                if (result.status === 'success') {
+                    renderWishlist(result.data);
+                } else {
+                    document.getElementById('wishlistContainer').innerHTML = '<p style="color:var(--danger)">Error loading radar data.</p>';
+                }
+            } catch (err) {
+                console.error(err);
+                document.getElementById('wishlistContainer').innerHTML = '<p style="color:var(--danger)">Connection lost to ground control.</p>';
+            }
+        }
+
+        function renderWishlist(items) {
+            const container = document.getElementById('wishlistContainer');
+            const nikoItems = items.filter(i => (i.child_name || 'Niko').toLowerCase() === 'niko');
+            
+            if (nikoItems.length === 0) {
+                container.innerHTML = '<p class="loading">No flight plans filed yet. Add your first item above!</p>';
+                return;
+            }
+
+            container.innerHTML = '';
+            const grid = document.createElement('div');
+            grid.className = 'wishlist-grid';
+
+            nikoItems.forEach(item => {
+                const isTop = item.priority === 'top';
+                const card = document.createElement('div');
+                card.className = `item-card ${isTop ? 'top-choice' : ''}`;
+
+                let badgeHtml = '';
+                if (item.priority === 'top') badgeHtml = '<span class="priority-badge badge-top">🤩 Top Choice</span>';
+                else if (item.priority === 'medium') badgeHtml = '<span class="priority-badge badge-medium">😁 Medium Want</span>';
+                else badgeHtml = '<span class="priority-badge badge-regular">🙂 Regular</span>';
+
+                const thumb = item.image_url ? item.image_url : 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=600&q=80';
+
+                card.innerHTML = `
+                    <img src="${thumb}" class="item-thumb" alt="${item.item_title}" onerror="this.src='https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=600&q=80'">
+                    <div class="item-content">
+                        ${badgeHtml}
+                        <h3 class="item-title">${item.item_title}</h3>
+                        <div class="item-price">${item.price_range || 'Price TBD'}</div>
+                        <div class="item-notes">${item.notes || 'No special notes'}</div>
+                        <div class="item-actions">
+                            ${item.item_url ? `<a href="${item.item_url}" target="_blank" class="btn-link">View Store ↗</a>` : ''}
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+            container.appendChild(grid);
+        }
+
+        async function submitItem(e) {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            btn.textContent = 'Transmitting...';
+
+            const payload = {
+                action: 'add',
+                child_name: 'Niko',
+                item_title: document.getElementById('item_title').value,
+                item_url: document.getElementById('item_url').value,
+                image_url: document.getElementById('image_url').value,
+                price_range: document.getElementById('price_range').value,
+                notes: document.getElementById('notes').value,
+                priority: document.querySelector('input[name="priority"]:checked').value
+            };
+
+            try {
+                await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+                document.getElementById('wishlistForm').reset();
+                setPriority('top', document.querySelector('.priority-option'));
+                fetchWishlist();
+            } catch (err) {
+                alert('Transmission failed. Check connection.');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Transmit Flight Plan';
+            }
+        }
+
+        fetchWishlist();
+    </script>
+</body>
+</html>
