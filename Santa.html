@@ -234,8 +234,8 @@
             box-shadow: 0 0 30px rgba(239, 71, 111, 0.4);
         }
         .modal-card img {
-            width: 100px;
-            height: 100px;
+            width: 110px;
+            height: 110px;
             object-fit: cover;
             border-radius: 50%;
             border: 3px solid var(--danger);
@@ -253,10 +253,6 @@
             line-height: 1.5;
             margin-bottom: 20px;
         }
-        .modal-btns {
-            display: flex;
-            gap: 15px;
-        }
         .modal-btn {
             flex: 1;
             padding: 10px;
@@ -266,8 +262,7 @@
             border: none;
             font-size: 1rem;
         }
-        .btn-confirm-modal { background: var(--danger); color: white; }
-        .btn-cancel-modal { background: #334155; color: white; }
+        .btn-confirm-modal { background: var(--danger); color: white; width: 100%; }
         .loading { text-align: center; padding: 40px; color: var(--text-muted); font-family: 'Share Tech Mono', monospace; font-size: 1.2rem; }
     </style>
 </head>
@@ -305,8 +300,8 @@
     <!-- Grandparent Safeguard Uncheck Modal -->
     <div class="modal-overlay" id="uncheckModal">
         <div class="modal-card">
-            <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=300&q=80" alt="Hold up pilot">
-            <h3>HOLD UP, PILOT!</h3>
+            <img src="jen_emoji_no_earrings.jpg" alt="Jenn" onerror="this.src='https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=300&q=80'">
+            <h3>HOLD UP, JENN!</h3>
             <p>Need to change or uncheck a purchase?<br><br><strong>Please text or call directly!</strong><br>This prevents accidental ground collisions and duplicate gear purchases.</p>
             <button class="modal-btn btn-confirm-modal" onclick="closeModal()">Copy That, Over & Out</button>
         </div>
@@ -354,138 +349,5 @@
             });
 
             // Sort: Unpurchased items first, purchased items at the bottom.
-            // Also prioritize 'top' choice within unpurchased.
             filtered.sort((a, b) => {
-                const aPurchased = String(a.purchased).toLowerCase() === 'true';
-                const bPurchased = String(b.purchased).toLowerCase() === 'true';
-                if (aPurchased !== bPurchased) return aPurchased ? 1 : -1;
-
-                const priorityWeight = { top: 3, medium: 2, regular: 1 };
-                const pA = priorityWeight[a.priority] || 1;
-                const pB = priorityWeight[b.priority] || 1;
-                return pB - pA;
-            });
-
-            if (filtered.length === 0) {
-                container.innerHTML = '<p class="loading">No matching flight items found on radar.</p>';
-                return;
-            }
-
-            container.innerHTML = '';
-            const grid = document.createElement('div');
-            grid.className = 'wishlist-grid';
-
-            filtered.forEach(item => {
-                const isPurchased = String(item.purchased).toLowerCase() === 'true';
-                const isTop = item.priority === 'top';
-                const card = document.createElement('div');
-                card.className = `item-card ${isPurchased ? 'purchased' : ''} ${isTop && !isPurchased ? 'top-choice' : ''}`;
-
-                let badgeHtml = '';
-                if (item.priority === 'top') badgeHtml = '<span class="priority-badge badge-top">🤩 Top Choice</span>';
-                else if (item.priority === 'medium') badgeHtml = '<span class="priority-badge badge-medium">😁 Medium Want</span>';
-                else badgeHtml = '<span class="priority-badge badge-regular">🙂 Regular</span>';
-
-                const thumb = item.image_url ? item.image_url : 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=600&q=80';
-
-                card.innerHTML = `
-                    <img src="${thumb}" class="item-thumb" alt="${item.item_title}" onerror="this.src='https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=600&q=80'">
-                    <div class="item-content">
-                        <div class="card-header-row">
-                            ${badgeHtml}
-                            <select class="priority-select-inline" onchange="updateItemPriority('${item.item_id}', this.value)">
-                                <option value="top" ${item.priority === 'top' ? 'selected' : ''}>🤩 Top</option>
-                                <option value="medium" ${item.priority === 'medium' ? 'selected' : ''}>😁 Med</option>
-                                <option value="regular" ${item.priority === 'regular' ? 'selected' : ''}>🙂 Reg</option>
-                            </select>
-                        </div>
-                        <h3 class="item-title">${item.item_title}</h3>
-                        <div class="item-price">${item.price_range || 'Price TBD'}</div>
-                        <div class="item-notes">${item.notes || 'No special notes'}</div>
-                        
-                        <div class="purchase-box">
-                            <label class="checkbox-wrapper">
-                                <input type="checkbox" ${isPurchased ? 'checked' : ''} onchange="handlePurchaseToggle(event, '${item.item_id}', ${isPurchased}, '${item.purchased_by || ''}')">
-                                <span>${isPurchased ? 'Cleared / Purchased' : 'Mark as Purchased'}</span>
-                            </label>
-                            ${isPurchased ? `<div class="purchased-info">Locked by: ${item.purchased_by}</div>` : ''}
-                        </div>
-
-                        <div class="item-actions">
-                            ${item.item_url ? `<a href="${item.item_url}" target="_blank" class="btn-link">View Store ↗</a>` : ''}
-                        </div>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-            container.appendChild(grid);
-        }
-
-        async function handlePurchaseToggle(event, itemId, wasPurchased, currentBuyer) {
-            const checkbox = event.target;
-            
-            if (wasPurchased) {
-                // Grandparent safeguard: unchecking is blocked
-                checkbox.checked = true;
-                document.getElementById('uncheckModal').style.display = 'flex';
-                return;
-            }
-
-            // Marking as purchased: prompt for shopper name with strict validation
-            let shopperName = prompt('Enter your shopper name (Required):');
-            if (!shopperName || shopperName.trim() === '') {
-                alert('Shopper name is required to lock in a purchase!');
-                checkbox.checked = false;
-                return;
-            }
-
-            checkbox.disabled = true;
-            try {
-                const response = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        action: 'update_purchase',
-                        item_id: itemId,
-                        purchased: true,
-                        purchased_by: shopperName.trim()
-                    })
-                });
-                const result = await response.json();
-                if (result.status === 'success') {
-                    fetchWishlist();
-                } else {
-                    alert('Failed to update status.');
-                    checkbox.checked = false;
-                }
-            } catch (err) {
-                alert('Connection error.');
-                checkbox.checked = false;
-            } finally {
-                checkbox.disabled = false;
-            }
-        }
-
-        async function updateItemPriority(itemId, newPriority) {
-            try {
-                await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        action: 'update_priority',
-                        item_id: itemId,
-                        priority: newPriority
-                    })
-                });
-                fetchWishlist();
-            } catch (err) {
-                alert('Failed to update priority.');
-            }
-        }
-
-        function closeModal() {
-            document.getElementById('uncheckModal').style.display = 'none';
-        }
-
-        fetchWishlist();
-    </script>
-</body>
-</html>
+                const aPurchased = String
