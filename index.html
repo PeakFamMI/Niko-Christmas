@@ -86,7 +86,7 @@
             text-transform: uppercase;
             letter-spacing: 1px;
         }
-        input, textarea, select {
+        input, textarea {
             width: 100%;
             padding: 12px;
             background: #0f172a;
@@ -97,7 +97,7 @@
             font-size: 1rem;
             box-sizing: border-box;
         }
-        input:focus, textarea:focus, select:focus {
+        input:focus, textarea:focus {
             outline: none;
             border-color: var(--accent-blue);
             box-shadow: 0 0 8px rgba(58, 134, 255, 0.4);
@@ -256,15 +256,9 @@
                         <input type="url" id="item_url" placeholder="https://...">
                     </div>
                 </div>
-                <div class="grid-2">
-                    <div class="form-group">
-                        <label>Image URL (Thumbnail)</label>
-                        <input type="url" id="image_url" placeholder="https://... (image link)">
-                    </div>
-                    <div class="form-group">
-                        <label>Estimated Price Range</label>
-                        <input type="text" id="price_range" placeholder="e.g. $40 - $50">
-                    </div>
+                <div class="form-group">
+                    <label>Estimated Price Range</label>
+                    <input type="text" id="price_range" placeholder="e.g. $40 - $50">
                 </div>
                 <div class="form-group">
                     <label>Notes (Color, Scale, Specs)</label>
@@ -369,7 +363,6 @@
                 child_name: 'Niko',
                 item_title: document.getElementById('item_title').value,
                 item_url: document.getElementById('item_url').value,
-                image_url: document.getElementById('image_url').value,
                 price_range: document.getElementById('price_range').value,
                 notes: document.getElementById('notes').value,
                 priority: document.querySelector('input[name="priority"]:checked').value
