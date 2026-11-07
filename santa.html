@@ -139,15 +139,6 @@
         .badge-medium { background: rgba(58, 134, 255, 0.2); color: var(--accent-blue); border: 1px solid var(--accent-blue); }
         .badge-regular { background: rgba(141, 153, 174, 0.2); color: var(--text-muted); border: 1px solid var(--text-muted); }
         
-        .priority-select-inline {
-            background: #0f172a;
-            color: var(--text-main);
-            border: 1px solid #334155;
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            cursor: pointer;
-        }
         .item-title {
             font-size: 1.1rem;
             font-weight: 600;
@@ -387,11 +378,6 @@
                     <div class="item-content">
                         <div class="card-header-row">
                             ${badgeHtml}
-                            <select class="priority-select-inline" onchange="updateItemPriority('${item.item_id}', this.value)">
-                                <option value="top" ${item.priority === 'top' ? 'selected' : ''}>🤩 Top</option>
-                                <option value="medium" ${item.priority === 'medium' ? 'selected' : ''}>😁 Med</option>
-                                <option value="regular" ${item.priority === 'regular' ? 'selected' : ''}>🙂 Reg</option>
-                            </select>
                         </div>
                         <h3 class="item-title">${item.item_title}</h3>
                         <div class="item-price">${item.price_range || 'Price TBD'}</div>
@@ -419,20 +405,22 @@
             const checkbox = event.target;
             
             if (wasPurchased) {
-                // Safeguard: unchecking is blocked
+                // Safeguard: unchecking is blocked, triggers Jenn's modal
                 checkbox.checked = true;
                 document.getElementById('uncheckModal').style.display = 'flex';
                 return;
             }
 
-            // Marking as purchased: default/validate as Jenn
+            // Marking as purchased: prompt for shopper name with strict validation (default Jenn)
             let shopperName = prompt('Enter shopper name:', 'Jenn');
             if (shopperName === null) {
                 checkbox.checked = false;
                 return;
             }
             if (shopperName.trim() === '') {
-                shopperName = 'Jenn';
+                alert('Shopper name is required!');
+                checkbox.checked = false;
+                return;
             }
 
             checkbox.disabled = true;
@@ -458,22 +446,6 @@
                 checkbox.checked = false;
             } finally {
                 checkbox.disabled = false;
-            }
-        }
-
-        async function updateItemPriority(itemId, newPriority) {
-            try {
-                await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        action: 'update_priority',
-                        item_id: itemId,
-                        priority: newPriority
-                    })
-                });
-                fetchWishlist();
-            } catch (err) {
-                alert('Failed to update priority.');
             }
         }
 
