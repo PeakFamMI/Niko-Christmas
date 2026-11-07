@@ -257,7 +257,6 @@
         <div class="form-card">
             <h2>🛫 Add New Flight Item</h2>
             <form id="wishlistForm" onsubmit="submitItem(event)">
-                <input type="hidden" id="input-image" value="">
                 <div class="grid-2">
                     <div class="form-group">
                         <label>Item Name / Aircraft Part</label>
@@ -269,12 +268,18 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Estimated Price Range</label>
-                    <input type="text" id="price_range" placeholder="e.g. $40 - $50">
+                    <label>Thumbnail Image URL (Optional)</label>
+                    <input type="url" id="input-image" placeholder="Auto-scraped or paste image link here...">
                 </div>
-                <div class="form-group">
-                    <label>Notes (Color, Scale, Specs)</label>
-                    <textarea id="notes" rows="2" placeholder="e.g. 1:48 scale model or specific color"></textarea>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Estimated Price Range</label>
+                        <input type="text" id="price_range" placeholder="e.g. $40 - $50">
+                    </div>
+                    <div class="form-group">
+                        <label>Notes (Color, Scale, Specs)</label>
+                        <input type="text" id="notes" placeholder="e.g. 1:48 scale model">
+                    </div>
                 </div>
                 <div class="form-group">
                     <label>Priority Rating</label>
