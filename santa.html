@@ -1,486 +1,522 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Niko's Wish List | Air Traffic Control (Adult Portal)</title>
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-color: #0b132b;
-            --panel-bg: #1c2541;
-            --card-bg: #223055;
-            --accent-blue: #3a86ff;
-            --accent-gold: #ffd166;
-            --accent-green: #38a3a5;
-            --text-main: #f8f9fa;
-            --text-muted: #8d99ae;
-            --danger: #ef476f;
-        }
-        body {
-            font-family: 'Outfit', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            margin: 0;
-            padding: 20px;
-            background-image: radial-gradient(circle at 50% 10%, #1c2541 0%, #0b132b 90%);
-            min-height: 100vh;
-        }
-        header {
-            text-align: center;
-            padding: 30px 20px;
-            background: var(--panel-bg);
-            border: 2px solid var(--accent-green);
-            border-radius: 12px;
-            margin-bottom: 30px;
-            box-shadow: 0 0 20px rgba(56, 163, 165, 0.2);
-        }
-        header h1 {
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 2.3rem;
-            margin: 0;
-            color: var(--accent-green);
-            letter-spacing: 2px;
-        }
-        header p {
-            color: var(--text-muted);
-            margin-top: 10px;
-            font-size: 1.1rem;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        .filter-panel {
-            background: var(--panel-bg);
-            border: 1px solid #334155;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 30px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .filter-group {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            flex: 1;
-            min-width: 200px;
-        }
-        label {
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            color: var(--text-muted);
-            font-weight: 600;
-            letter-spacing: 1px;
-        }
-        select {
-            padding: 10px;
-            background: #0f172a;
-            border: 1px solid #334155;
-            color: var(--text-main);
-            border-radius: 8px;
-            font-family: 'Outfit', sans-serif;
-            font-size: 1rem;
-        }
-        .wishlist-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-        }
-        .item-card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid #334155;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            transition: all 0.2s;
-        }
-        .item-card.purchased {
-            opacity: 0.65;
-            border-color: #334155;
-            background: #171f38;
-        }
-        .item-card.top-choice:not(.purchased) {
-            border: 2px solid var(--accent-gold);
-            box-shadow: 0 0 15px rgba(255, 209, 102, 0.3);
-        }
-        .item-thumb-container {
-            width: 100%;
-            height: 180px;
-            background: #0f172a;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-        .item-thumb {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .placeholder {
-            font-size: 3rem;
-        }
-        .item-content {
-            padding: 15px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-        .card-header-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-        .priority-badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 700;
-        }
-        .badge-top { background: rgba(255, 209, 102, 0.2); color: var(--accent-gold); border: 1px solid var(--accent-gold); }
-        .badge-medium { background: rgba(58, 134, 255, 0.2); color: var(--accent-blue); border: 1px solid var(--accent-blue); }
-        .badge-regular { background: rgba(141, 153, 174, 0.2); color: var(--text-muted); border: 1px solid var(--text-muted); }
-        
-        .item-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin: 0 0 6px 0;
-            color: var(--text-main);
-        }
-        .item-price {
-            font-family: 'Share Tech Mono', monospace;
-            color: var(--accent-green);
-            font-size: 1.1rem;
-            margin-bottom: 6px;
-        }
-        .item-notes {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            margin-bottom: 15px;
-            flex: 1;
-        }
-        .purchase-box {
-            background: #0f172a;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid #334155;
-            margin-top: auto;
-        }
-        .checkbox-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.95rem;
-        }
-        .checkbox-wrapper input {
-            width: 18px;
-            height: 18px;
-            accent-color: var(--accent-green);
-            cursor: pointer;
-        }
-        .purchased-info {
-            font-size: 0.85rem;
-            color: var(--accent-green);
-            margin-top: 6px;
-            font-family: 'Share Tech Mono', monospace;
-        }
-        .item-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-        }
-        .btn-link {
-            flex: 1;
-            background: #0f172a;
-            color: var(--accent-blue);
-            text-align: center;
-            padding: 6px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.85rem;
-            border: 1px solid #334155;
-        }
-        .btn-link:hover { background: var(--accent-blue); color: white; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🛩️ Hangar Control - Shopper Portal</title>
+  <style>
+    :root {
+      --bg-color: #0b1922;
+      --card-bg: #132736;
+      --card-border: #1f3d54;
+      --accent-red: #c93b3b;
+      --accent-red-hover: #b02a2a;
+      --accent-gold: #e2b442;
+      --text-main: #f3f7f4;
+      --text-muted: #9eb8a7;
+      --purchased-bg: #0d1e2b;
+      --purchased-border: #152c3d;
+    }
 
-        /* Modal Styles */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(11, 19, 43, 0.85);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            display: none;
-        }
-        .modal-card {
-            background: var(--panel-bg);
-            border: 2px solid var(--danger);
-            border-radius: 12px;
-            padding: 30px;
-            max-width: 450px;
-            width: 90%;
-            text-align: center;
-            box-shadow: 0 0 30px rgba(239, 71, 111, 0.4);
-        }
-        .modal-card img {
-            width: 110px;
-            height: 110px;
-            object-fit: cover;
-            border-radius: 50%;
-            border: 3px solid var(--danger);
-            margin-bottom: 15px;
-        }
-        .modal-card h3 {
-            font-family: 'Share Tech Mono', monospace;
-            color: var(--danger);
-            font-size: 1.8rem;
-            margin: 0 0 10px 0;
-        }
-        .modal-card p {
-            color: var(--text-main);
-            font-size: 1.05rem;
-            line-height: 1.5;
-            margin-bottom: 20px;
-        }
-        .modal-btn {
-            flex: 1;
-            padding: 10px;
-            border-radius: 8px;
-            font-weight: 700;
-            cursor: pointer;
-            border: none;
-            font-size: 1rem;
-        }
-        .btn-confirm-modal { background: var(--danger); color: white; width: 100%; }
-        .loading { text-align: center; padding: 40px; color: var(--text-muted); font-family: 'Share Tech Mono', monospace; font-size: 1.2rem; }
-    </style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    .container { max-width: 900px; margin: 0 auto; }
+
+    header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    header h1 {
+      font-size: 2.2rem;
+      color: var(--accent-gold);
+      text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+    }
+
+    .subhead {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-top: 5px;
+    }
+
+    /* Legend Box */
+    .legend-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 10px 16px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .legend-item { display: flex; align-items: center; gap: 6px; }
+
+    /* Filter Toolbar */
+    .filter-bar {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 14px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex-grow: 1;
+      min-width: 200px;
+    }
+
+    .filter-group label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .filter-group select {
+      background: #071118;
+      border: 1px solid var(--card-border);
+      color: white;
+      padding: 8px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+    }
+
+    .items-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .item-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: all 0.2s;
+    }
+
+    .item-card.is-top {
+      border: 2px solid var(--accent-gold);
+      box-shadow: 0 0 14px rgba(226, 180, 66, 0.35);
+    }
+
+    .item-card.is-purchased {
+      background: var(--purchased-bg);
+      border-color: var(--purchased-border);
+      opacity: 0.55;
+    }
+
+    .item-thumb-box {
+      width: 100%;
+      height: 180px;
+      background: #050d12;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .item-thumb-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .item-thumb-box .placeholder {
+      font-size: 2.5rem;
+    }
+
+    .item-body {
+      padding: 14px;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .item-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+
+    .item-title a {
+      color: var(--text-main);
+      text-decoration: none;
+    }
+
+    .item-title a:hover { text-decoration: underline; }
+
+    .item-meta {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .item-notes {
+      font-size: 0.85rem;
+      color: #b5c7bc;
+      margin-bottom: 12px;
+      flex-grow: 1;
+    }
+
+    .purchase-control {
+      margin-top: auto;
+      padding-top: 10px;
+      border-top: 1px solid var(--card-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .purchase-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .purchase-label input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent-red);
+      cursor: pointer;
+    }
+
+    .buyer-info {
+      font-size: 0.75rem;
+      color: var(--accent-gold);
+      text-align: right;
+      line-height: 1.2;
+    }
+
+    /* Modal Popup featuring jen_emoji_no_earrings.jpg */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.75);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-box {
+      background: var(--card-bg);
+      border: 2px solid var(--accent-gold);
+      padding: 24px;
+      border-radius: 12px;
+      max-width: 360px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+    }
+
+    .modal-box img {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--accent-gold);
+      margin-bottom: 14px;
+    }
+
+    .modal-box h3 {
+      color: var(--accent-gold);
+      margin-bottom: 8px;
+      font-size: 1.2rem;
+    }
+
+    .modal-box p {
+      font-size: 0.95rem;
+      color: var(--text-main);
+      margin-bottom: 20px;
+      line-height: 1.4;
+    }
+
+    .modal-btn {
+      background: var(--accent-red);
+      color: white;
+      border: none;
+      padding: 10px 24px;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .modal-btn:hover { background: var(--accent-red-hover); }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>📡 AIR TRAFFIC CONTROL (ADULT PORTAL) 📡</h1>
-            <p>Secure Flight Tracking & Grandparent Safeguard Console</p>
-        </header>
 
-        <div class="filter-panel">
-            <div class="filter-group">
-                <label>Filter by Priority</label>
-                <select id="filterPriority" onchange="filterAndRender()">
-                    <option value="all">All Priorities</option>
-                    <option value="top">🤩 Top Choice</option>
-                    <option value="medium">😁 Medium Want</option>
-                    <option value="regular">🙂 Regular</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <label>Filter by Price Range</label>
-                <select id="filterPrice" onchange="filterAndRender()">
-                    <option value="all">All Prices</option>
-                    <option value="under25">Under $25</option>
-                    <option value="25to50">$25 - $50</option>
-                    <option value="50plus">$50+</option>
-                </select>
-            </div>
-        </div>
+<div class="container">
+  <header>
+    <h1>🛩️ Niko's Hangar Control</h1>
+    <div class="subhead">Shopper Portal & Gift Tracker</div>
+  </header>
 
-        <div id="wishlistContainer" class="loading">Scanning radar for Niko's flight items...</div>
+  <!-- Legend -->
+  <div class="legend-box">
+    <div class="legend-item"><span style="font-size: 1.3rem;">🤩</span> Top Choice</div>
+    <div class="legend-item"><span style="font-size: 1.1rem;">😁</span> Medium Want</div>
+    <div class="legend-item"><span>🙂</span> Regular</div>
+  </div>
+
+  <!-- Filter Toolbar -->
+  <div class="filter-bar">
+    <div class="filter-group">
+      <label>FILTER BY PRIORITY</label>
+      <select id="filter-priority" onchange="renderList()">
+        <option value="all">All Priorities</option>
+        <option value="top">🤩 Top Choice</option>
+        <option value="medium">😁 Medium Want</option>
+        <option value="regular">🙂 Regular</option>
+      </select>
     </div>
 
-    <!-- Grandparent Safeguard / Blank Name Modal -->
-    <div class="modal-overlay" id="warningModal">
-        <div class="modal-card">
-            <img src="jen_emoji_no_earrings.jpg" alt="Warning" onerror="this.src='https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=300&q=80'">
-            <h3 id="modalTitle">HOLD UP!</h3>
-            <p id="modalText">Need to change or uncheck a purchase?<br><br><strong>Please text or call directly!</strong><br>This prevents accidental ground collisions and duplicate gear purchases.</p>
-            <button class="modal-btn btn-confirm-modal" onclick="closeModal()">Copy That, Over & Out</button>
-        </div>
+    <div class="filter-group">
+      <label>FILTER BY PRICE</label>
+      <select id="filter-price" onchange="renderList()">
+        <option value="all">All Prices</option>
+        <option value="under25">Under $25</option>
+        <option value="25to50">$25 - $50</option>
+        <option value="over50">$50+</option>
+      </select>
     </div>
+  </div>
 
-    <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxLclC8Li65MnALdSPGWnm5b473PkBwJUUbUVQzwV7eh2bFw6DQuRReJ_G12ec4DNIM/exec';
-        let allItems = [];
+  <div class="items-grid" id="items-container">
+    <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-muted);">
+      Loading hangar items...
+    </div>
+  </div>
+</div>
 
-        async function fetchWishlist() {
-            try {
-                const response = await fetch(SCRIPT_URL);
-                const result = await response.json();
-                if (result.status === 'success') {
-                    allItems = result.data;
-                    filterAndRender();
-                } else {
-                    document.getElementById('wishlistContainer').innerHTML = '<p style="color:var(--danger)">Error loading telemetry.</p>';
-                }
-            } catch (err) {
-                console.error(err);
-                document.getElementById('wishlistContainer').innerHTML = '<p style="color:var(--danger)">Radar signal lost.</p>';
-            }
-        }
+<!-- Safeguard Modal (For Unchecks) -->
+<div class="modal-overlay" id="goofy-modal">
+  <div class="modal-box">
+    <img src="jen_emoji_no_earrings.jpg" alt="Jenni Emoji" onerror="this.src='https://via.placeholder.com/110?text=✈️'">
+    <h3>Hold Up!</h3>
+    <p>Need to change or uncheck a purchase? Please text or call Adam directly so he can update it!</p>
+    <button class="modal-btn" onclick="closeModal('goofy-modal')">Got it!</button>
+  </div>
+</div>
 
-        function filterAndRender() {
-            const container = document.getElementById('wishlistContainer');
-            const priorityFilter = document.getElementById('filterPriority').value;
-            const priceFilter = document.getElementById('filterPrice').value;
+<!-- Missing Name Modal Popup -->
+<div class="modal-overlay" id="name-modal">
+  <div class="modal-box">
+    <img src="jen_emoji_no_earrings.jpg" alt="Jenni Emoji" onerror="this.src='https://via.placeholder.com/110?text=✈️'">
+    <h3>Hey, you forgot something!</h3>
+    <p>Please enter your name so Adam knows who's shopping before marking this as bought.</p>
+    <button class="modal-btn" onclick="closeModal('name-modal')">Okay, let me type it</button>
+  </div>
+</div>
 
-            let filtered = allItems.filter(item => {
-                if (priorityFilter !== 'all' && item.priority !== priorityFilter) return false;
-                
-                if (priceFilter !== 'all') {
-                    const priceStr = item.price_range || '';
-                    const numbers = priceStr.match(/\d+/g);
-                    if (numbers && numbers.length > 0) {
-                        const maxVal = Math.max(...numbers.map(Number));
-                        if (priceFilter === 'under25' && maxVal >= 25) return false;
-                        if (priceFilter === '25to50' && (maxVal < 25 || maxVal > 50)) return false;
-                        if (priceFilter === '50plus' && maxVal <= 50) return false;
-                    }
-                }
-                return true;
-            });
+<script>
+  const API_URL = "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE";
 
-            // Sort: Unpurchased items first, purchased items at the bottom.
-            filtered.sort((a, b) => {
-                const aPurchased = String(a.purchased).toLowerCase() === 'true';
-                const bPurchased = String(b.purchased).toLowerCase() === 'true';
-                if (aPurchased !== bPurchased) return aPurchased ? 1 : -1;
+  let allItems = [];
 
-                const priorityWeight = { top: 3, medium: 2, regular: 1 };
-                const pA = priorityWeight[a.priority] || 1;
-                const pB = priorityWeight[b.priority] || 1;
-                return pB - pA;
-            });
+  async function loadData() {
+    try {
+      const res = await fetch(`${API_URL}?t=${Date.now()}`);
+      const data = await res.json();
+      allItems = (data.items || []).map(normalizeItem);
+      renderList();
+    } catch (err) {
+      console.error("Failed to load wishlist:", err);
+      document.getElementById("items-container").innerHTML =
+        `<div style="grid-column: 1 / -1; text-align: center; color: #ff6b6b;">
+           Failed to connect to sheet. Please check script deployment.
+         </div>`;
+    }
+  }
 
-            if (filtered.length === 0) {
-                container.innerHTML = '<p class="loading">No matching flight items found on radar.</p>';
-                return;
-            }
+  function normalizeItem(raw) {
+    return {
+      id: String(raw.item_id || ""),
+      title: String(raw.item_title || "Untitled"),
+      url: String(raw.item_url || ""),
+      image: String(raw.image_url || ""),
+      price: String(raw.price_range || ""),
+      notes: String(raw.notes || ""),
+      priority: String(raw.priority || "regular").toLowerCase(),
+      purchased: !!(raw.purchased === true || raw.purchased === "TRUE" || raw.purchased === 1),
+      purchased_by: String(raw.purchased_by || ""),
+      date_purchased: String(raw.date_purchased || "")
+    };
+  }
 
-            container.innerHTML = '';
-            const grid = document.createElement('div');
-            grid.className = 'wishlist-grid';
+  async function handleCheckboxClick(event, itemId, isCurrentlyPurchased) {
+    if (isCurrentlyPurchased) {
+      event.preventDefault();
+      document.getElementById("goofy-modal").style.display = "flex";
+      return;
+    }
 
-            filtered.forEach(item => {
-                const isPurchased = String(item.purchased).toLowerCase() === 'true';
-                const isTop = item.priority === 'top';
-                const card = document.createElement('div');
-                card.className = `item-card ${isPurchased ? 'purchased' : ''} ${isTop && !isPurchased ? 'top-choice' : ''}`;
+    let buyer = "";
+    while (!buyer || buyer.trim() === "") {
+      buyer = prompt("Who is purchasing this item? (Please enter your name):", "");
+      if (buyer === null) {
+        event.preventDefault();
+        return;
+      }
+      buyer = buyer.trim();
+      if (!buyer) {
+        document.getElementById("name-modal").style.display = "flex";
+        await new Promise(resolve => window.resolveNameModal = resolve);
+      }
+    }
 
-                let badgeHtml = '';
-                if (item.priority === 'top') badgeHtml = '<span class="priority-badge badge-top">🤩 Top Choice</span>';
-                else if (item.priority === 'medium') badgeHtml = '<span class="priority-badge badge-medium">😁 Medium Want</span>';
-                else badgeHtml = '<span class="priority-badge badge-regular">🙂 Regular</span>';
+    const target = allItems.find(i => i.id === itemId);
+    if (target) {
+      target.purchased = true;
+      target.purchased_by = buyer;
+      target.date_purchased = new Date().toLocaleDateString();
+    }
+    renderList();
 
-                const thumbHtml = item.image_url 
-                    ? `<img src="${item.image_url}" class="item-thumb" alt="${item.item_title}" onerror="this.parentElement.innerHTML='<div class=\\'placeholder\\'>✈️</div>'">`
-                    : `<div class="placeholder">✈️</div>`;
+    try {
+      await fetch(API_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "toggle_purchase",
+          item_id: itemId,
+          purchased: true,
+          purchased_by: buyer
+        })
+      });
+    } catch (e) {
+      console.warn("Sync failed:", e);
+    }
+  }
 
-                card.innerHTML = `
-                    <div class="item-thumb-container">
-                        ${thumbHtml}
-                    </div>
-                    <div class="item-content">
-                        <div class="card-header-row">
-                            ${badgeHtml}
-                        </div>
-                        <h3 class="item-title">${item.item_title}</h3>
-                        <div class="item-price">${item.price_range || 'Price TBD'}</div>
-                        <div class="item-notes">${item.notes || 'No special notes'}</div>
-                        
-                        <div class="purchase-box">
-                            <label class="checkbox-wrapper">
-                                <input type="checkbox" ${isPurchased ? 'checked' : ''} onchange="handlePurchaseToggle(event, '${item.item_id}', ${isPurchased}, '${item.purchased_by || ''}')">
-                                <span>${isPurchased ? 'Cleared / Purchased' : 'Mark as Purchased'}</span>
-                            </label>
-                            ${isPurchased ? `<div class="purchased-info">Locked by: ${item.purchased_by}</div>` : ''}
-                        </div>
+  function closeModal(modalId) {
+    document.getElementById(modalId).style.display = "none";
+    if (modalId === 'name-modal' && window.resolveNameModal) {
+      window.resolveNameModal();
+    }
+  }
 
-                        <div class="item-actions">
-                            ${item.item_url ? `<a href="${item.item_url}" target="_blank" class="btn-link">View Store ↗</a>` : ''}
-                        </div>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-            container.appendChild(grid);
-        }
+  function checkPriceCategory(priceStr, category) {
+    if (category === 'all') return true;
+    if (!priceStr) return false;
+    
+    const numbers = priceStr.match(/\d+/g);
+    if (!numbers || numbers.length === 0) return false;
+    const maxVal = Math.max(...numbers.map(Number));
 
-        async function handlePurchaseToggle(event, itemId, wasPurchased, currentBuyer) {
-            const checkbox = event.target;
-            
-            if (wasPurchased) {
-                // Safeguard: unchecking is blocked, triggers warning modal
-                checkbox.checked = true;
-                showModal(
-                    "HOLD UP!",
-                    "Need to change or uncheck a purchase?<br><br><strong>Please text or call directly!</strong><br>This prevents accidental ground collisions and duplicate gear purchases."
-                );
-                return;
-            }
+    if (category === 'under25') return maxVal <= 25;
+    if (category === '25to50') return maxVal > 25 && maxVal <= 50;
+    if (category === 'over50') return maxVal > 50;
+    return true;
+  }
 
-            // Marking as purchased: prompt for shopper name (starts completely blank)
-            let shopperName = prompt('Enter shopper name:', '');
-            if (shopperName === null) {
-                checkbox.checked = false;
-                return;
-            }
-            if (shopperName.trim() === '') {
-                checkbox.checked = false;
-                showModal(
-                    "HOLD UP!",
-                    "You left your name blank!<br><br><strong>Who's buying this gear?</strong><br>Please enter your name so ground control knows."
-                );
-                return;
-            }
+  function renderList() {
+    const container = document.getElementById("items-container");
+    container.innerHTML = "";
 
-            checkbox.disabled = true;
-            try {
-                const response = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        action: 'update_purchase',
-                        item_id: itemId,
-                        purchased: true,
-                        purchased_by: shopperName.trim()
-                    })
-                });
-                const result = await response.json();
-                if (result.status === 'success') {
-                    fetchWishlist();
-                } else {
-                    alert('Failed to update status.');
-                    checkbox.checked = false;
-                }
-            } catch (err) {
-                alert('Connection error.');
-                checkbox.checked = false;
-            } finally {
-                checkbox.disabled = false;
-            }
-        }
+    const priorityFilter = document.getElementById("filter-priority").value;
+    const priceFilter = document.getElementById("filter-price").value;
 
-        function showModal(title, htmlText) {
-            document.getElementById('modalTitle').textContent = title;
-            document.getElementById('modalText').innerHTML = htmlText;
-            document.getElementById('warningModal').style.display = 'flex';
-        }
+    let filtered = allItems.filter(item => {
+      const matchPriority = (priorityFilter === "all" || item.priority === priorityFilter);
+      const matchPrice = checkPriceCategory(item.price, priceFilter);
+      return matchPriority && matchPrice;
+    });
 
-        function closeModal() {
-            document.getElementById('warningModal').style.display = 'none';
-        }
+    // Sort: Unpurchased first, purchased items sink to bottom
+    filtered.sort((a, b) => {
+      if (a.purchased === b.purchased) return 0;
+      return a.purchased ? 1 : -1;
+    });
 
-        fetchWishlist();
-    </script>
+    if (filtered.length === 0) {
+      container.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-muted);">No items match these filters.</div>`;
+      return;
+    }
+
+    filtered.forEach(item => {
+      const card = document.createElement("div");
+      card.className = `item-card ${item.priority === 'top' ? 'is-top' : ''} ${item.purchased ? 'is-purchased' : ''}`;
+
+      const thumb = item.image
+        ? `<img src="${item.image}" alt="${item.title}" onerror="this.parentElement.innerHTML='<div class=\\'placeholder\\'>✈️</div>'">`
+        : `<div class="placeholder">✈️</div>`;
+
+      let emojiDisplay = "🙂";
+      let emojiStyle = "font-size: 1rem;";
+      if (item.priority === 'top') {
+        emojiDisplay = "🤩";
+        emojiStyle = "font-size: 1.5rem;";
+      } else if (item.priority === 'medium') {
+        emojiDisplay = "😁";
+        emojiStyle = "font-size: 1.25rem;";
+      }
+
+      card.innerHTML = `
+        <div class="item-thumb-box">${thumb}</div>
+        <div class="item-body">
+          <div class="item-header">
+            <div style="${emojiStyle}">${emojiDisplay}</div>
+          </div>
+          <div class="item-title">
+            ${item.url ? `<a href="${item.url}" target="_blank" rel="noopener">${item.title}</a>` : item.title}
+          </div>
+          <div class="item-meta">
+            <span>${item.price ? item.price : "Price unlisted"}</span>
+            ${item.url ? `<a href="${item.url}" target="_blank" rel="noopener" style="color: var(--accent-gold); text-decoration: none;">View Store ↗</a>` : ""}
+          </div>
+          ${item.notes ? `<div class="item-notes">${item.notes}</div>` : ""}
+          <div class="purchase-control">
+            <label class="purchase-label">
+              <input type="checkbox" ${item.purchased ? "checked" : ""} onclick="handleCheckboxClick(event, '${item.id}', ${item.purchased})">
+              <span>${item.purchased ? "PURCHASED" : "Mark as Bought"}</span>
+            </label>
+            ${item.purchased ? `<div class="buyer-info">${item.date_purchased}</div>` : ""}
+          </div>
+        </div>
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  loadData();
+</script>
+
 </body>
 </html>
