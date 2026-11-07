@@ -302,8 +302,8 @@
     <!-- Grandparent Safeguard / Blank Name Modal -->
     <div class="modal-overlay" id="warningModal">
         <div class="modal-card">
-            <img src="jen_emoji_no_earrings.jpg" alt="Jenn" onerror="this.src='https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=300&q=80'">
-            <h3 id="modalTitle">HOLD UP, JENN!</h3>
+            <img src="jen_emoji_no_earrings.jpg" alt="Warning" onerror="this.src='https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=300&q=80'">
+            <h3 id="modalTitle">HOLD UP!</h3>
             <p id="modalText">Need to change or uncheck a purchase?<br><br><strong>Please text or call directly!</strong><br>This prevents accidental ground collisions and duplicate gear purchases.</p>
             <button class="modal-btn btn-confirm-modal" onclick="closeModal()">Copy That, Over & Out</button>
         </div>
@@ -420,16 +420,16 @@
             const checkbox = event.target;
             
             if (wasPurchased) {
-                // Safeguard: unchecking is blocked, triggers Jenn's modal
+                // Safeguard: unchecking is blocked, triggers warning modal
                 checkbox.checked = true;
                 showModal(
-                    "HOLD UP, JENN!",
+                    "HOLD UP!",
                     "Need to change or uncheck a purchase?<br><br><strong>Please text or call directly!</strong><br>This prevents accidental ground collisions and duplicate gear purchases."
                 );
                 return;
             }
 
-            // Marking as purchased: prompt for shopper name (starts blank)
+            // Marking as purchased: prompt for shopper name (starts completely blank)
             let shopperName = prompt('Enter shopper name:', '');
             if (shopperName === null) {
                 checkbox.checked = false;
@@ -438,7 +438,7 @@
             if (shopperName.trim() === '') {
                 checkbox.checked = false;
                 showModal(
-                    "HOLD UP, JENN!",
+                    "HOLD UP!",
                     "You left your name blank!<br><br><strong>Who's buying this gear?</strong><br>Please enter your name so ground control knows."
                 );
                 return;
