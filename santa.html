@@ -316,7 +316,7 @@
                 const response = await fetch(SCRIPT_URL);
                 const result = await response.json();
                 if (result.status === 'success') {
-                    allItems = result.data.filter(i => (i.child_name || 'Niko').toLowerCase() === 'niko');
+                    allItems = result.data;
                     filterAndRender();
                 } else {
                     document.getElementById('wishlistContainer').innerHTML = '<p style="color:var(--danger)">Error loading telemetry.</p>';
