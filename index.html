@@ -312,9 +312,8 @@
 
         function renderWishlist(items) {
             const container = document.getElementById('wishlistContainer');
-            const nikoItems = items.filter(i => (i.child_name || 'Niko').toLowerCase() === 'niko');
             
-            if (nikoItems.length === 0) {
+            if (items.length === 0) {
                 container.innerHTML = '<p class="loading">No flight plans filed yet. Add your first item above!</p>';
                 return;
             }
@@ -323,7 +322,7 @@
             const grid = document.createElement('div');
             grid.className = 'wishlist-grid';
 
-            nikoItems.forEach(item => {
+            items.forEach(item => {
                 const isTop = item.priority === 'top';
                 const card = document.createElement('div');
                 card.className = `item-card ${isTop ? 'top-choice' : ''}`;
@@ -360,7 +359,6 @@
 
             const payload = {
                 action: 'add',
-                child_name: 'Niko',
                 item_title: document.getElementById('item_title').value,
                 item_url: document.getElementById('item_url').value,
                 price_range: document.getElementById('price_range').value,
