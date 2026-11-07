@@ -292,13 +292,13 @@
 
   function normalizeItem(raw) {
     return {
-      id: String(raw.item_id || ""),
-      title: String(raw.item_title || "Untitled"),
-      url: String(raw.item_url || ""),
-      image: String(raw.image_url || ""),
-      price: String(raw.price_range || ""),
-      notes: String(raw.notes || ""),
-      priority: String(raw.priority || "regular").toLowerCase()
+      id: String(raw.item_id || raw["Item ID"] || ""),
+      title: String(raw.item_title || raw["Item Title"] || "Untitled"),
+      url: String(raw.item_url || raw["Item URL"] || ""),
+      image: String(raw.image_url || raw["Image URL"] || raw.image || ""),
+      price: String(raw.price_range || raw["Price Range"] || ""),
+      notes: String(raw.notes || raw.Notes || ""),
+      priority: String(raw.priority || raw.Priority || "regular").toLowerCase()
     };
   }
 
@@ -339,7 +339,6 @@
       return;
     }
 
-    // Bulletproof fallback: If URL exists but image wasn't grabbed yet, fetch it right now on submit
     if (url && !image) {
       try {
         const res = await fetch(`https://api.microlink.io?url=${encodeURIComponent(url)}`);
