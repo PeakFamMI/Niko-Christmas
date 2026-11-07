@@ -288,12 +288,12 @@
         <div id="wishlistContainer" class="loading">Scanning radar for Niko's flight items...</div>
     </div>
 
-    <!-- Grandparent Safeguard Uncheck Modal -->
-    <div class="modal-overlay" id="uncheckModal">
+    <!-- Grandparent Safeguard Uncheck / Blank Name Modal -->
+    <div class="modal-overlay" id="warningModal">
         <div class="modal-card">
             <img src="jen_emoji_no_earrings.jpg" alt="Jenn" onerror="this.src='https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=300&q=80'">
-            <h3>HOLD UP, JENN!</h3>
-            <p>Need to change or uncheck a purchase?<br><br><strong>Please text or call directly!</strong><br>This prevents accidental ground collisions and duplicate gear purchases.</p>
+            <h3 id="modalTitle">HOLD UP, JENN!</h3>
+            <p id="modalText">Need to change or uncheck a purchase?<br><br><strong>Please text or call directly!</strong><br>This prevents accidental ground collisions and duplicate gear purchases.</p>
             <button class="modal-btn btn-confirm-modal" onclick="closeModal()">Copy That, Over & Out</button>
         </div>
     </div>
@@ -407,19 +407,25 @@
             if (wasPurchased) {
                 // Safeguard: unchecking is blocked, triggers Jenn's modal
                 checkbox.checked = true;
-                document.getElementById('uncheckModal').style.display = 'flex';
+                showModal(
+                    "HOLD UP, JENN!",
+                    "Need to change or uncheck a purchase?<br><br><strong>Please text or call directly!</strong><br>This prevents accidental ground collisions and duplicate gear purchases."
+                );
                 return;
             }
 
-            // Marking as purchased: prompt for shopper name with strict validation (default Jenn)
-            let shopperName = prompt('Enter shopper name:', 'Jenn');
+            // Marking as purchased: prompt for shopper name (starts blank)
+            let shopperName = prompt('Enter shopper name:', '');
             if (shopperName === null) {
                 checkbox.checked = false;
                 return;
             }
             if (shopperName.trim() === '') {
-                alert('Shopper name is required!');
                 checkbox.checked = false;
+                showModal(
+                    "HOLD UP, JENN!",
+                    "You left your name blank!<br><br><strong>Who's buying this gear?</strong><br>Please enter your name so ground control knows."
+                );
                 return;
             }
 
@@ -449,8 +455,14 @@
             }
         }
 
+        function showModal(title, htmlText) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalText').innerHTML = htmlText;
+            document.getElementById('warningModal').style.display = 'flex';
+        }
+
         function closeModal() {
-            document.getElementById('uncheckModal').style.display = 'none';
+            document.getElementById('warningModal').style.display = 'none';
         }
 
         fetchWishlist();
