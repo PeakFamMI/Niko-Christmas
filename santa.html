@@ -110,11 +110,22 @@
             border: 2px solid var(--accent-gold);
             box-shadow: 0 0 15px rgba(255, 209, 102, 0.3);
         }
-        .item-thumb {
+        .item-thumb-container {
             width: 100%;
             height: 180px;
-            object-fit: cover;
             background: #0f172a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .item-thumb {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .placeholder {
+            font-size: 3rem;
         }
         .item-content {
             padding: 15px;
@@ -288,7 +299,7 @@
         <div id="wishlistContainer" class="loading">Scanning radar for Niko's flight items...</div>
     </div>
 
-    <!-- Grandparent Safeguard Uncheck / Blank Name Modal -->
+    <!-- Grandparent Safeguard / Blank Name Modal -->
     <div class="modal-overlay" id="warningModal">
         <div class="modal-card">
             <img src="jen_emoji_no_earrings.jpg" alt="Jenn" onerror="this.src='https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=300&q=80'">
@@ -371,10 +382,14 @@
                 else if (item.priority === 'medium') badgeHtml = '<span class="priority-badge badge-medium">😁 Medium Want</span>';
                 else badgeHtml = '<span class="priority-badge badge-regular">🙂 Regular</span>';
 
-                const thumb = item.image_url ? item.image_url : 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=600&q=80';
+                const thumbHtml = item.image_url 
+                    ? `<img src="${item.image_url}" class="item-thumb" alt="${item.item_title}" onerror="this.parentElement.innerHTML='<div class=\\'placeholder\\'>✈️</div>'">`
+                    : `<div class="placeholder">✈️</div>`;
 
                 card.innerHTML = `
-                    <img src="${thumb}" class="item-thumb" alt="${item.item_title}" onerror="this.src='https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=600&q=80'">
+                    <div class="item-thumb-container">
+                        ${thumbHtml}
+                    </div>
                     <div class="item-content">
                         <div class="card-header-row">
                             ${badgeHtml}
