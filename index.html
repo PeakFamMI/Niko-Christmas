@@ -164,11 +164,22 @@
             border: 2px solid var(--accent-gold);
             box-shadow: 0 0 15px rgba(255, 209, 102, 0.3);
         }
-        .item-thumb {
+        .item-thumb-container {
             width: 100%;
             height: 180px;
-            object-fit: cover;
             background: #0f172a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .item-thumb {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .placeholder {
+            font-size: 3rem;
         }
         .item-content {
             padding: 15px;
@@ -246,14 +257,15 @@
         <div class="form-card">
             <h2>🛫 Add New Flight Item</h2>
             <form id="wishlistForm" onsubmit="submitItem(event)">
+                <input type="hidden" id="input-image" value="">
                 <div class="grid-2">
                     <div class="form-group">
                         <label>Item Name / Aircraft Part</label>
-                        <input type="text" id="item_title" required placeholder="e.g. Lego F-15 Eagle Jet">
+                        <input type="text" id="input-title" required placeholder="e.g. Lego F-15 Eagle Jet">
                     </div>
                     <div class="form-group">
                         <label>Store URL</label>
-                        <input type="url" id="item_url" placeholder="https://...">
+                        <input type="url" id="input-url" placeholder="https://..." onblur="autoFetchMetadata()">
                     </div>
                 </div>
                 <div class="form-group">
@@ -288,6 +300,29 @@
 
     <script>
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxLclC8Li65MnALdSPGWnm5b473PkBwJUUbUVQzwV7eh2bFw6DQuRReJ_G12ec4DNIM/exec';
+
+        async function autoFetchMetadata() {
+            const urlInput = document.getElementById("input-url").value.trim();
+            if (!urlInput || !urlInput.startsWith("http")) return;
+
+            try {
+                const res = await fetch(`https://api.microlink.io?url=${encodeURIComponent(urlInput)}`);
+                const json = await res.json();
+                if (json.status === "success" && json.data) {
+                    const titleEl = document.getElementById("input-title");
+                    const imgInput = document.getElementById("input-image");
+
+                    if (!titleEl.value && json.data.title) {
+                        titleEl.value = json.data.title.substring(0, 80);
+                    }
+                    if (json.data.image && json.data.image.url) {
+                        imgInput.value = json.data.image.url;
+                    }
+                }
+            } catch (e) {
+                console.log("Could not auto-scrape URL metadata", e);
+            }
+        }
 
         function setPriority(val, el) {
             document.querySelectorAll('.priority-option').forEach(opt => opt.classList.remove('selected'));
@@ -332,10 +367,14 @@
                 else if (item.priority === 'medium') badgeHtml = '<span class="priority-badge badge-medium">😁 Medium Want</span>';
                 else badgeHtml = '<span class="priority-badge badge-regular">🙂 Regular</span>';
 
-                const thumb = item.image_url ? item.image_url : 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=600&q=80';
+                const thumbHtml = item.image_url 
+                    ? `<img src="${item.image_url}" class="item-thumb" alt="${item.item_title}" onerror="this.parentElement.innerHTML='<div class=\\'placeholder\\'>✈️</div>'">`
+                    : `<div class="placeholder">✈️</div>`;
 
                 card.innerHTML = `
-                    <img src="${thumb}" class="item-thumb" alt="${item.item_title}" onerror="this.src='https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=600&q=80'">
+                    <div class="item-thumb-container">
+                        ${thumbHtml}
+                    </div>
                     <div class="item-content">
                         ${badgeHtml}
                         <h3 class="item-title">${item.item_title}</h3>
@@ -359,8 +398,9 @@
 
             const payload = {
                 action: 'add',
-                item_title: document.getElementById('item_title').value,
-                item_url: document.getElementById('item_url').value,
+                item_title: document.getElementById('input-title').value,
+                item_url: document.getElementById('input-url').value,
+                image_url: document.getElementById('input-image').value,
                 price_range: document.getElementById('price_range').value,
                 notes: document.getElementById('notes').value,
                 priority: document.querySelector('input[name="priority"]:checked').value
@@ -372,6 +412,7 @@
                     body: JSON.stringify(payload)
                 });
                 document.getElementById('wishlistForm').reset();
+                document.getElementById('input-image').value = '';
                 setPriority('top', document.querySelector('.priority-option'));
                 fetchWishlist();
             } catch (err) {
