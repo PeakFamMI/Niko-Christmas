@@ -1,434 +1,463 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Niko's Aviation Wish List | Flight Deck</title>
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-color: #0b132b;
-            --panel-bg: #1c2541;
-            --card-bg: #223055;
-            --accent-blue: #3a86ff;
-            --accent-gold: #ffd166;
-            --accent-green: #38a3a5;
-            --text-main: #f8f9fa;
-            --text-muted: #8d99ae;
-            --danger: #ef476f;
-        }
-        body {
-            font-family: 'Outfit', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            margin: 0;
-            padding: 20px;
-            background-image: radial-gradient(circle at 50% 10%, #1c2541 0%, #0b132b 90%);
-            min-height: 100vh;
-        }
-        header {
-            text-align: center;
-            padding: 30px 20px;
-            background: var(--panel-bg);
-            border: 2px solid var(--accent-blue);
-            border-radius: 12px;
-            margin-bottom: 30px;
-            box-shadow: 0 0 20px rgba(58, 134, 255, 0.2);
-        }
-        header h1 {
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 2.5rem;
-            margin: 0;
-            color: var(--accent-gold);
-            letter-spacing: 2px;
-        }
-        header p {
-            color: var(--text-muted);
-            margin-top: 10px;
-            font-size: 1.1rem;
-        }
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-        .form-card {
-            background: var(--panel-bg);
-            border: 1px solid #334155;
-            border-radius: 12px;
-            padding: 25px;
-            margin-bottom: 40px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
-        }
-        .form-card h2 {
-            margin-top: 0;
-            font-family: 'Share Tech Mono', monospace;
-            color: var(--accent-blue);
-            border-bottom: 1px solid #334155;
-            padding-bottom: 10px;
-        }
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-        @media (max-width: 768px) {
-            .grid-2 { grid-template-columns: 1fr; }
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        input, textarea {
-            width: 100%;
-            padding: 12px;
-            background: #0f172a;
-            border: 1px solid #334155;
-            color: var(--text-main);
-            border-radius: 8px;
-            font-family: 'Outfit', sans-serif;
-            font-size: 1rem;
-            box-sizing: border-box;
-        }
-        input:focus, textarea:focus {
-            outline: none;
-            border-color: var(--accent-blue);
-            box-shadow: 0 0 8px rgba(58, 134, 255, 0.4);
-        }
-        .priority-selector {
-            display: flex;
-            gap: 15px;
-            margin-top: 5px;
-        }
-        .priority-option {
-            flex: 1;
-            background: #0f172a;
-            border: 2px solid #334155;
-            border-radius: 8px;
-            padding: 10px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .priority-option input { display: none; }
-        .priority-option.selected {
-            border-color: var(--accent-gold);
-            background: rgba(255, 209, 102, 0.1);
-        }
-        button.btn-flight {
-            background: linear-gradient(135deg, #3a86ff, #2563eb);
-            color: white;
-            border: none;
-            padding: 14px 28px;
-            font-weight: 800;
-            font-size: 1.1rem;
-            border-radius: 8px;
-            cursor: pointer;
-            width: 100%;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: transform 0.1s, box-shadow 0.2s;
-            box-shadow: 0 4px 12px rgba(58, 134, 255, 0.4);
-        }
-        button.btn-flight:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(58, 134, 255, 0.6);
-        }
-        .wishlist-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-        }
-        .item-card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid #334155;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            transition: transform 0.2s;
-        }
-        .item-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
-        }
-        .item-card.top-choice {
-            border: 2px solid var(--accent-gold);
-            box-shadow: 0 0 15px rgba(255, 209, 102, 0.3);
-        }
-        .item-thumb-container {
-            width: 100%;
-            height: 180px;
-            background: #0f172a;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-        .item-thumb {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .placeholder {
-            font-size: 3rem;
-        }
-        .item-content {
-            padding: 15px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-        .priority-badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            margin-bottom: 8px;
-            align-self: flex-start;
-        }
-        .badge-top { background: rgba(255, 209, 102, 0.2); color: var(--accent-gold); border: 1px solid var(--accent-gold); }
-        .badge-medium { background: rgba(58, 134, 255, 0.2); color: var(--accent-blue); border: 1px solid var(--accent-blue); }
-        .badge-regular { background: rgba(141, 153, 174, 0.2); color: var(--text-muted); border: 1px solid var(--text-muted); }
-        .item-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin: 0 0 8px 0;
-            color: var(--text-main);
-        }
-        .item-price {
-            font-family: 'Share Tech Mono', monospace;
-            color: var(--accent-green);
-            font-size: 1.1rem;
-            margin-bottom: 8px;
-        }
-        .item-notes {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            margin-bottom: 15px;
-            flex: 1;
-        }
-        .item-actions {
-            display: flex;
-            gap: 10px;
-        }
-        .btn-link {
-            flex: 1;
-            background: #0f172a;
-            color: var(--accent-blue);
-            text-align: center;
-            padding: 8px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.9rem;
-            border: 1px solid #334155;
-            transition: background 0.2s;
-        }
-        .btn-link:hover {
-            background: var(--accent-blue);
-            color: white;
-        }
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: var(--text-muted);
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 1.2rem;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>✈️ Niko's Aviation Wish List 🛩️</title>
+  <style>
+    :root {
+      --bg-color: #0b1922;
+      --card-bg: #132736;
+      --card-border: #1f3d54;
+      --accent-blue: #3b82c9;
+      --accent-blue-hover: #2d6ab0;
+      --accent-gold: #e2b442;
+      --text-main: #f3f7f4;
+      --text-muted: #9eb8a7;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    .container { max-width: 900px; margin: 0 auto; }
+
+    header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    header h1 {
+      font-size: 2.2rem;
+      color: var(--accent-gold);
+      text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+    }
+
+    .subhead {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-top: 5px;
+    }
+
+    .form-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 25px;
+    }
+
+    .form-card h2 {
+      font-size: 1.1rem;
+      margin-bottom: 12px;
+      color: var(--accent-gold);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    @media (max-width: 600px) {
+      .form-grid { grid-template-columns: 1fr; }
+    }
+
+    input, select {
+      width: 100%;
+      background: #071118;
+      border: 1px solid var(--card-border);
+      color: white;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+    }
+
+    input:focus, select:focus {
+      outline: 1px solid var(--accent-gold);
+    }
+
+    .radio-group {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      background: #071118;
+      border: 1px solid var(--card-border);
+      padding: 10px;
+      border-radius: 6px;
+    }
+
+    .radio-option {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    .radio-option input { width: auto; cursor: pointer; }
+
+    .form-actions {
+      margin-top: 12px;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .btn-submit {
+      background: var(--accent-blue);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .btn-submit:hover { background: var(--accent-blue-hover); }
+
+    .items-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .item-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.2s;
+    }
+
+    .item-card.is-top {
+      border: 2px solid var(--accent-gold);
+      box-shadow: 0 0 14px rgba(226, 180, 66, 0.35);
+    }
+
+    .item-thumb-box {
+      width: 100%;
+      height: 180px;
+      background: #050d12;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .item-thumb-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .item-thumb-box .placeholder {
+      font-size: 2.5rem;
+    }
+
+    .item-body {
+      padding: 14px;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .priority-selector {
+      background: #071118;
+      border: 1px solid var(--card-border);
+      color: white;
+      padding: 2px 6px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .item-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+
+    .item-title a {
+      color: var(--text-main);
+      text-decoration: none;
+    }
+
+    .item-title a:hover { text-decoration: underline; }
+
+    .item-meta {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .item-notes {
+      font-size: 0.85rem;
+      color: #b5c7bc;
+      margin-bottom: 12px;
+      flex-grow: 1;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>✈️ NIKO'S FLIGHT DECK ✈️</h1>
-            <p>Aviation Wish List & Flight Plan 2026</p>
-        </header>
 
-        <div class="form-card">
-            <h2>🛫 Add New Flight Item</h2>
-            <form id="wishlistForm" onsubmit="submitItem(event)">
-                <div class="grid-2">
-                    <div class="form-group">
-                        <label>Item Name / Aircraft Part</label>
-                        <input type="text" id="input-title" required placeholder="e.g. Lego F-15 Eagle Jet">
-                    </div>
-                    <div class="form-group">
-                        <label>Store URL</label>
-                        <input type="url" id="input-url" placeholder="https://..." onblur="autoFetchMetadata()">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Thumbnail Image URL (Optional)</label>
-                    <input type="url" id="input-image" placeholder="Auto-scraped or paste image link here...">
-                </div>
-                <div class="grid-2">
-                    <div class="form-group">
-                        <label>Estimated Price Range</label>
-                        <input type="text" id="price_range" placeholder="e.g. $40 - $50">
-                    </div>
-                    <div class="form-group">
-                        <label>Notes (Color, Scale, Specs)</label>
-                        <input type="text" id="notes" placeholder="e.g. 1:48 scale model">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Priority Rating</label>
-                    <div class="priority-selector">
-                        <label class="priority-option selected" onclick="setPriority('top', this)">
-                            <input type="radio" name="priority" value="top" checked> 🤩 Top Choice
-                        </label>
-                        <label class="priority-option" onclick="setPriority('medium', this)">
-                            <input type="radio" name="priority" value="medium"> 😁 Medium Want
-                        </label>
-                        <label class="priority-option" onclick="setPriority('regular', this)">
-                            <input type="radio" name="priority" value="regular"> 🙂 Regular
-                        </label>
-                    </div>
-                </div>
-                <button type="submit" class="btn-flight" id="submitBtn">Transmit Flight Plan</button>
-            </form>
+<div class="container">
+  <header>
+    <h1>✈️ Niko's Aviation Wish List 🛩️</h1>
+    <div class="subhead">Add your aviation gear and wishlist ideas!</div>
+  </header>
+
+  <div class="form-card">
+    <h2>Add an Item</h2>
+    <div class="form-grid">
+      <div>
+        <label style="font-size: 0.8rem; color: var(--text-muted);">Product Link (URL)</label>
+        <input type="url" id="input-url" placeholder="https://..." onblur="autoFetchMetadata()">
+      </div>
+
+      <div>
+        <label style="font-size: 0.8rem; color: var(--text-muted);">Item Name</label>
+        <input type="text" id="input-title" placeholder="e.g., Flight Simulator Yoke" required>
+      </div>
+
+      <div>
+        <label style="font-size: 0.8rem; color: var(--text-muted);">Estimated Price</label>
+        <input type="text" id="input-price" placeholder="e.g., $40 - $50">
+      </div>
+
+      <div>
+        <label style="font-size: 0.8rem; color: var(--text-muted);">Specifics (Size, Model, Notes)</label>
+        <input type="text" id="input-notes" placeholder="Compatible with PC/USB">
+      </div>
+
+      <div style="grid-column: 1 / -1;">
+        <label style="font-size: 0.8rem; color: var(--text-muted); display: block; margin-bottom: 4px;">Priority Level (Required)</label>
+        <div class="radio-group">
+          <label class="radio-option"><input type="radio" name="priority" value="top" checked> 🤩 Top Choice</label>
+          <label class="radio-option"><input type="radio" name="priority" value="medium"> 😁 Medium</label>
+          <label class="radio-option"><input type="radio" name="priority" value="regular"> 🙂 Regular</label>
         </div>
+      </div>
 
-        <h2 style="font-family: 'Share Tech Mono', monospace; color: var(--accent-gold); border-bottom: 1px solid #334155; padding-bottom: 10px;">📋 Niko's Hangar Wish List</h2>
-        <div id="wishlistContainer" class="loading">Loading flight telemetry...</div>
+      <input type="hidden" id="input-image" value="">
     </div>
 
-    <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxLclC8Li65MnALdSPGWnm5b473PkBwJUUbUVQzwV7eh2bFw6DQuRReJ_G12ec4DNIM/exec';
+    <div class="form-actions">
+      <button class="btn-submit" onclick="submitNewItem()">Add to Wishlist</button>
+    </div>
+  </div>
 
-        async function autoFetchMetadata() {
-            const urlInput = document.getElementById("input-url").value.trim();
-            if (!urlInput || !urlInput.startsWith("http")) return;
+  <div class="items-grid" id="items-container">
+    <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-muted);">
+      Loading wish list...
+    </div>
+  </div>
+</div>
 
-            try {
-                const res = await fetch(`https://api.microlink.io?url=${encodeURIComponent(urlInput)}`);
-                const json = await res.json();
-                if (json.status === "success" && json.data) {
-                    const titleEl = document.getElementById("input-title");
-                    const imgInput = document.getElementById("input-image");
+<script>
+  const API_URL = "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE";
 
-                    if (!titleEl.value && json.data.title) {
-                        titleEl.value = json.data.title.substring(0, 80);
-                    }
-                    if (json.data.image && json.data.image.url) {
-                        imgInput.value = json.data.image.url;
-                    }
-                }
-            } catch (e) {
-                console.log("Could not auto-scrape URL metadata", e);
-            }
+  let allItems = [];
+
+  async function loadData() {
+    try {
+      const res = await fetch(`${API_URL}?t=${Date.now()}`);
+      const data = await res.json();
+      allItems = (data.items || []).map(normalizeItem);
+      renderList();
+    } catch (err) {
+      console.error("Failed to load wishlist:", err);
+      document.getElementById("items-container").innerHTML =
+        `<div style="grid-column: 1 / -1; text-align: center; color: #ff6b6b;">
+           Failed to connect to sheet. Please check script deployment.
+         </div>`;
+    }
+  }
+
+  function normalizeItem(raw) {
+    return {
+      id: String(raw.item_id || ""),
+      title: String(raw.item_title || "Untitled"),
+      url: String(raw.item_url || ""),
+      image: String(raw.image_url || ""),
+      price: String(raw.price_range || ""),
+      notes: String(raw.notes || ""),
+      priority: String(raw.priority || "regular").toLowerCase()
+    };
+  }
+
+  async function autoFetchMetadata() {
+    const urlInput = document.getElementById("input-url").value.trim();
+    if (!urlInput || !urlInput.startsWith("http")) return;
+
+    try {
+      const res = await fetch(`https://api.microlink.io?url=${encodeURIComponent(urlInput)}`);
+      const json = await res.json();
+      if (json.status === "success" && json.data) {
+        const titleEl = document.getElementById("input-title");
+        const imgInput = document.getElementById("input-image");
+
+        if (!titleEl.value && json.data.title) {
+          titleEl.value = json.data.title.substring(0, 80);
         }
-
-        function setPriority(val, el) {
-            document.querySelectorAll('.priority-option').forEach(opt => opt.classList.remove('selected'));
-            el.classList.add('selected');
-            el.querySelector('input').checked = true;
+        if (json.data.image && json.data.image.url) {
+          imgInput.value = json.data.image.url;
         }
+      }
+    } catch (e) {
+      console.log("Could not auto-scrape URL metadata", e);
+    }
+  }
 
-        async function fetchWishlist() {
-            try {
-                const response = await fetch(SCRIPT_URL);
-                const result = await response.json();
-                if (result.status === 'success') {
-                    renderWishlist(result.data);
-                } else {
-                    document.getElementById('wishlistContainer').innerHTML = '<p style="color:var(--danger)">Error loading radar data.</p>';
-                }
-            } catch (err) {
-                console.error(err);
-                document.getElementById('wishlistContainer').innerHTML = '<p style="color:var(--danger)">Connection lost to ground control.</p>';
-            }
-        }
+  async function submitNewItem() {
+    const title = document.getElementById("input-title").value.trim();
+    const url = document.getElementById("input-url").value.trim();
+    const price = document.getElementById("input-price").value.trim();
+    const notes = document.getElementById("input-notes").value.trim();
+    const priorityRadio = document.querySelector('input[name="priority"]:checked');
+    const priority = priorityRadio ? priorityRadio.value : "regular";
+    const image = document.getElementById("input-image").value.trim();
 
-        function renderWishlist(items) {
-            const container = document.getElementById('wishlistContainer');
-            
-            if (items.length === 0) {
-                container.innerHTML = '<p class="loading">No flight plans filed yet. Add your first item above!</p>';
-                return;
-            }
+    if (!title) {
+      alert("Please provide an item name.");
+      return;
+    }
 
-            container.innerHTML = '';
-            const grid = document.createElement('div');
-            grid.className = 'wishlist-grid';
+    const tempId = "wl-" + Date.now();
+    const newItem = {
+      id: tempId,
+      title: title,
+      url: url,
+      image: image,
+      price: price,
+      notes: notes,
+      priority: priority
+    };
 
-            items.forEach(item => {
-                const isTop = item.priority === 'top';
-                const card = document.createElement('div');
-                card.className = `item-card ${isTop ? 'top-choice' : ''}`;
+    allItems.unshift(newItem);
+    renderList();
 
-                let badgeHtml = '';
-                if (item.priority === 'top') badgeHtml = '<span class="priority-badge badge-top">🤩 Top Choice</span>';
-                else if (item.priority === 'medium') badgeHtml = '<span class="priority-badge badge-medium">😁 Medium Want</span>';
-                else badgeHtml = '<span class="priority-badge badge-regular">🙂 Regular</span>';
+    document.getElementById("input-title").value = "";
+    document.getElementById("input-url").value = "";
+    document.getElementById("input-price").value = "";
+    document.getElementById("input-notes").value = "";
+    document.getElementById("input-image").value = "";
 
-                const thumbHtml = item.image_url 
-                    ? `<img src="${item.image_url}" class="item-thumb" alt="${item.item_title}" onerror="this.parentElement.innerHTML='<div class=\\'placeholder\\'>✈️</div>'">`
-                    : `<div class="placeholder">✈️</div>`;
+    try {
+      await fetch(API_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "add",
+          item: {
+            item_title: title,
+            item_url: url,
+            image_url: image,
+            price_range: price,
+            notes: notes,
+            priority: priority
+          }
+        })
+      });
+    } catch (e) {
+      console.warn("Sync failed:", e);
+    }
+  }
 
-                card.innerHTML = `
-                    <div class="item-thumb-container">
-                        ${thumbHtml}
-                    </div>
-                    <div class="item-content">
-                        ${badgeHtml}
-                        <h3 class="item-title">${item.item_title}</h3>
-                        <div class="item-price">${item.price_range || 'Price TBD'}</div>
-                        <div class="item-notes">${item.notes || 'No special notes'}</div>
-                        <div class="item-actions">
-                            ${item.item_url ? `<a href="${item.item_url}" target="_blank" class="btn-link">View Store ↗</a>` : ''}
-                        </div>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-            container.appendChild(grid);
-        }
+  async function updateItemPriority(itemId, newPriority) {
+    const target = allItems.find(i => i.id === itemId);
+    if (target) {
+      target.priority = newPriority;
+    }
+    renderList();
 
-        async function submitItem(e) {
-            e.preventDefault();
-            const btn = document.getElementById('submitBtn');
-            btn.disabled = true;
-            btn.textContent = 'Transmitting...';
+    try {
+      await fetch(API_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "update_priority",
+          item_id: itemId,
+          priority: newPriority
+        })
+      });
+    } catch (e) {
+      console.warn("Priority update sync failed:", e);
+    }
+  }
 
-            const payload = {
-                action: 'add',
-                item_title: document.getElementById('input-title').value,
-                item_url: document.getElementById('input-url').value,
-                image_url: document.getElementById('input-image').value,
-                price_range: document.getElementById('price_range').value,
-                notes: document.getElementById('notes').value,
-                priority: document.querySelector('input[name="priority"]:checked').value
-            };
+  function renderList() {
+    const container = document.getElementById("items-container");
+    container.innerHTML = "";
 
-            try {
-                await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    body: JSON.stringify(payload)
-                });
-                document.getElementById('wishlistForm').reset();
-                document.getElementById('input-image').value = '';
-                setPriority('top', document.querySelector('.priority-option'));
-                fetchWishlist();
-            } catch (err) {
-                alert('Transmission failed. Check connection.');
-            } finally {
-                btn.disabled = false;
-                btn.textContent = 'Transmit Flight Plan';
-            }
-        }
+    if (allItems.length === 0) {
+      container.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-muted);">No items added yet. Add your first item above!</div>`;
+      return;
+    }
 
-        fetchWishlist();
-    </script>
+    allItems.forEach(item => {
+      const card = document.createElement("div");
+      card.className = `item-card ${item.priority === 'top' ? 'is-top' : ''}`;
+
+      const thumb = item.image
+        ? `<img src="${item.image}" alt="${item.title}" onerror="this.parentElement.innerHTML='<div class=\\'placeholder\\'>✈️</div>'">`
+        : `<div class="placeholder">✈️</div>`;
+
+      let emojiDisplay = "🙂";
+      let emojiStyle = "font-size: 1rem;";
+      if (item.priority === 'top') {
+        emojiDisplay = "🤩";
+        emojiStyle = "font-size: 1.5rem;";
+      } else if (item.priority === 'medium') {
+        emojiDisplay = "😁";
+        emojiStyle = "font-size: 1.25rem;";
+      }
+
+      card.innerHTML = `
+        <div class="item-thumb-box">${thumb}</div>
+        <div class="item-body">
+          <div class="item-header">
+            <div style="${emojiStyle}">${emojiDisplay}</div>
+            <select class="priority-selector" onchange="updateItemPriority('${item.id}', this.value)">
+              <option value="top" ${item.priority === 'top' ? 'selected' : ''}>🤩 Top Choice</option>
+              <option value="medium" ${item.priority === 'medium' ? 'selected' : ''}>😁 Medium</option>
+              <option value="regular" ${item.priority === 'regular' ? 'selected' : ''}>🙂 Regular</option>
+            </select>
+          </div>
+          <div class="item-title">
+            ${item.url ? `<a href="${item.url}" target="_blank" rel="noopener">${item.title}</a>` : item.title}
+          </div>
+          <div class="item-meta">
+            <span>${item.price ? item.price : "Price unlisted"}</span>
+            ${item.url ? `<a href="${item.url}" target="_blank" rel="noopener" style="color: var(--accent-gold); text-decoration: none;">View Store ↗</a>` : ""}
+          </div>
+          ${item.notes ? `<div class="item-notes">${item.notes}</div>` : ""}
+        </div>
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  loadData();
+</script>
+
 </body>
 </html>
