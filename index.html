@@ -332,11 +332,24 @@
     const notes = document.getElementById("input-notes").value.trim();
     const priorityRadio = document.querySelector('input[name="priority"]:checked');
     const priority = priorityRadio ? priorityRadio.value : "regular";
-    const image = document.getElementById("input-image").value.trim();
+    let image = document.getElementById("input-image").value.trim();
 
     if (!title) {
       alert("Please provide an item name.");
       return;
+    }
+
+    // Bulletproof fallback: If URL exists but image wasn't grabbed yet, fetch it right now on submit
+    if (url && !image) {
+      try {
+        const res = await fetch(`https://api.microlink.io?url=${encodeURIComponent(url)}`);
+        const json = await res.json();
+        if (json.status === "success" && json.data && json.data.image && json.data.image.url) {
+          image = json.data.image.url;
+        }
+      } catch (e) {
+        console.log("On-submit thumbnail fetch backup failed", e);
+      }
     }
 
     const tempId = "wl-" + Date.now();
